@@ -573,7 +573,7 @@ inhibit_rules:
 	}
 
 	// Wait for alert to propagate
-	time.Sleep(30 * time.Second)
+	time.Sleep(62 * time.Second)
 
 	opts := metav1.ListOptions{
 		LabelSelector: fields.SelectorFromSet(fields.Set(map[string]string{
