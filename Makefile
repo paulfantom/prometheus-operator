@@ -9,10 +9,7 @@ VERSION?=$(shell cat VERSION | tr -d " \t\n\r")
 FIRST_GOPATH:=$(firstword $(subst :, ,$(shell go env GOPATH)))
 PO_CRDGEN_BINARY:=$(FIRST_GOPATH)/bin/po-crdgen
 OPENAPI_GEN_BINARY:=$(FIRST_GOPATH)/bin/openapi-gen
-GOJSONTOYAML_BINARY:=$(FIRST_GOPATH)/bin/gojsontoyaml
-JB_BINARY:=$(FIRST_GOPATH)/bin/jb
 PO_DOCGEN_BINARY:=$(FIRST_GOPATH)/bin/po-docgen
-EMBEDMD_BINARY:=$(FIRST_GOPATH)/bin/embedmd
 
 TYPES_V1_TARGET:=pkg/apis/monitoring/v1/types.go
 
@@ -145,7 +142,7 @@ example/prometheus-operator-crd/**.crd.yaml: $(OPENAPI_TARGET) $(PO_CRDGEN_BINAR
 	po-crdgen servicemonitor > example/prometheus-operator-crd/servicemonitor.crd.yaml
 	po-crdgen prometheusrule > example/prometheus-operator-crd/prometheusrule.crd.yaml
 
-jsonnet/prometheus-operator/**-crd.libsonnet: $(shell find example/prometheus-operator-crd/*.crd.yaml -type f) $(GOJSONTOYAML_BINARY)
+jsonnet/prometheus-operator/**-crd.libsonnet: $(shell find example/prometheus-operator-crd/*.crd.yaml -type f)
 	cat example/prometheus-operator-crd/alertmanager.crd.yaml   | gojsontoyaml -yamltojson > jsonnet/prometheus-operator/alertmanager-crd.libsonnet
 	cat example/prometheus-operator-crd/prometheus.crd.yaml     | gojsontoyaml -yamltojson > jsonnet/prometheus-operator/prometheus-crd.libsonnet
 	cat example/prometheus-operator-crd/servicemonitor.crd.yaml | gojsontoyaml -yamltojson > jsonnet/prometheus-operator/servicemonitor-crd.libsonnet
@@ -154,8 +151,8 @@ jsonnet/prometheus-operator/**-crd.libsonnet: $(shell find example/prometheus-op
 bundle.yaml: $(shell find example/rbac/prometheus-operator/*.yaml -type f)
 	scripts/generate-bundle.sh
 
-scripts/generate/vendor: $(JB_BINARY) $(shell find jsonnet/prometheus-operator -type f)
-	cd scripts/generate; $(JB_BINARY) install;
+scripts/generate/vendor: $(shell find jsonnet/prometheus-operator -type f)
+	cd scripts/generate; jb install;
 
 example/non-rbac/prometheus-operator.yaml: scripts/generate/vendor scripts/generate/prometheus-operator-non-rbac.jsonnet $(shell find jsonnet -type f)
 	scripts/generate/build-non-rbac-prometheus-operator.sh
@@ -177,11 +174,6 @@ Documentation/api.md: $(PO_DOCGEN_BINARY) $(TYPES_V1_TARGET)
 
 Documentation/compatibility.md: $(PO_DOCGEN_BINARY) pkg/prometheus/statefulset.go
 	$(PO_DOCGEN_BINARY) compatibility > $@
-
-# TODO: Disable after moving kube-prometheus out - need to update docs first
-# $(TO_BE_EXTENDED_DOCS): $(EMBEDMD_BINARY) $(shell find example)
-# 	$(EMBEDMD_BINARY) -w `find Documentation -name "*.md" | grep -v vendor`
-
 
 ##############
 # Formatting #
@@ -245,17 +237,8 @@ $(OPENAPI_GEN_BINARY):
 
 $(foreach binary,$(K8S_GEN_BINARIES),$(eval $(call _K8S_GEN_VAR_TARGET_,$(binary))))
 
-$(EMBEDMD_BINARY):
-	@go install -mod=vendor github.com/campoy/embedmd
-
-$(JB_BINARY):
-	@go install -mod=vendor github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
-
 $(PO_CRDGEN_BINARY): cmd/po-crdgen/main.go $(OPENAPI_TARGET)
 	@go install -mod=vendor $(GO_PKG)/cmd/po-crdgen
 
 $(PO_DOCGEN_BINARY): $(shell find cmd/po-docgen -type f) $(TYPES_V1_TARGET)
 	@go install -mod=vendor $(GO_PKG)/cmd/po-docgen
-
-$(GOJSONTOYAML_BINARY):
-	@go install -mod=vendor github.com/brancz/gojsontoyaml
