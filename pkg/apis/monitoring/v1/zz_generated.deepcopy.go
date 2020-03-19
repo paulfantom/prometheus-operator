@@ -1566,11 +1566,6 @@ func (in *ThanosSpec) DeepCopyInto(out *ThanosSpec) {
 		*out = new(string)
 		**out = **in
 	}
-	if in.BaseImage != nil {
-		in, out := &in.BaseImage, &out.BaseImage
-		*out = new(string)
-		**out = **in
-	}
 	in.Resources.DeepCopyInto(&out.Resources)
 	if in.ObjectStorageConfig != nil {
 		in, out := &in.ObjectStorageConfig, &out.ObjectStorageConfig

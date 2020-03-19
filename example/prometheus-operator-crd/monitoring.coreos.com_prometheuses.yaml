@@ -1070,9 +1070,6 @@ spec:
                 deny:
                   type: boolean
               type: object
-            baseImage:
-              description: Base image to use for a Prometheus deployment.
-              type: string
             configMaps:
               description: ConfigMaps is a list of ConfigMaps in the same namespace
                 as the Prometheus object, which shall be mounted into the Prometheus
@@ -2160,10 +2157,9 @@ spec:
                 to false.
               type: boolean
             image:
-              description: Image if specified has precedence over baseImage, tag and
-                sha combinations. Specifying the version is still necessary to ensure
-                the Prometheus Operator knows what version of Prometheus is being
-                configured.
+              description: Image to use for a Prometheus deployment. Specifying the
+                version is still necessary to ensure the Prometheus Operator knows
+                what version of Prometheus is being configured.
               type: string
             imagePullSecrets:
               description: An optional list of references to secrets in the same namespace
@@ -4483,9 +4479,6 @@ spec:
                 in any release. \n This is experimental and may change significantly
                 without backward compatibility in any release."
               properties:
-                baseImage:
-                  description: Thanos base image if other than default.
-                  type: string
                 grpcServerTlsConfig:
                   description: 'GRPCServerTLSConfig configures the gRPC server from
                     which Thanos Querier reads recorded rule data. Note: Currently
@@ -4609,10 +4602,9 @@ spec:
                       type: string
                   type: object
                 image:
-                  description: Image if specified has precedence over baseImage, tag
-                    and sha combinations. Specifying the version is still necessary
-                    to ensure the Prometheus Operator knows what version of Thanos
-                    is being configured.
+                  description: Image to use for a Prometheus deployment. Specifying
+                    the version is still necessary to ensure the Prometheus Operator
+                    knows what version of Thanos is being configured.
                   type: string
                 listenLocal:
                   description: ListenLocal makes the Thanos sidecar listen on loopback,
