@@ -54,8 +54,8 @@ func makeStatefulSet(am *monitoringv1.Alertmanager, old *appsv1.StatefulSet, con
 	// Ideally we would do it before storing but that's currently not possible.
 	// Potentially an update handler on first insertion.
 
-	if am.Spec.BaseImage == "" {
-		am.Spec.BaseImage = config.AlertmanagerDefaultBaseImage
+	if am.Spec.Image == "" {
+		am.Spec.Image = config.AlertmanagerDefaultImage
 	}
 	if am.Spec.PortName == "" {
 		am.Spec.PortName = defaultPortName
@@ -223,12 +223,12 @@ func makeStatefulSetSpec(a *monitoringv1.Alertmanager, config Config) (*appsv1.S
 	// If the tag is specified, we use the tag to identify the container image.
 	// If the sha is specified, we use the sha to identify the container image,
 	// as it has even stronger immutable guarantees to identify the image.
-	image := fmt.Sprintf("%s:%s", a.Spec.BaseImage, a.Spec.Version)
+	image := fmt.Sprintf("%s:%s", a.Spec.Image, a.Spec.Version)
 	if a.Spec.Tag != "" {
-		image = fmt.Sprintf("%s:%s", a.Spec.BaseImage, a.Spec.Tag)
+		image = fmt.Sprintf("%s:%s", a.Spec.Image, a.Spec.Tag)
 	}
 	if a.Spec.SHA != "" {
-		image = fmt.Sprintf("%s@sha256:%s", a.Spec.BaseImage, a.Spec.SHA)
+		image = fmt.Sprintf("%s@sha256:%s", a.Spec.Image, a.Spec.SHA)
 	}
 	if a.Spec.Image != nil && *a.Spec.Image != "" {
 		image = *a.Spec.Image

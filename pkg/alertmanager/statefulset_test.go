@@ -32,10 +32,10 @@ import (
 
 var (
 	defaultTestConfig = Config{
-		ConfigReloaderImage:          "jimmidyson/configmap-reload:latest",
-		ConfigReloaderCPU:            "100m",
-		ConfigReloaderMemory:         "25Mi",
-		AlertmanagerDefaultBaseImage: "quay.io/prometheus/alertmanager",
+		ConfigReloaderImage:      "jimmidyson/configmap-reload:latest",
+		ConfigReloaderCPU:        "100m",
+		ConfigReloaderMemory:     "25Mi",
+		AlertmanagerDefaultImage: "quay.io/prometheus/alertmanager",
 	}
 )
 
@@ -494,10 +494,10 @@ func sliceContains(slice []string, match string) bool {
 
 func TestSidecarsNoCPULimits(t *testing.T) {
 	testConfig := Config{
-		ConfigReloaderImage:          "jimmidyson/configmap-reload:latest",
-		ConfigReloaderCPU:            "0",
-		ConfigReloaderMemory:         "25Mi",
-		AlertmanagerDefaultBaseImage: "quay.io/prometheus/alertmanager",
+		ConfigReloaderImage:      "jimmidyson/configmap-reload:latest",
+		ConfigReloaderCPU:        "0",
+		ConfigReloaderMemory:     "25Mi",
+		AlertmanagerDefaultImage: "quay.io/prometheus/alertmanager",
 	}
 	sset, err := makeStatefulSet(&monitoringv1.Alertmanager{
 		Spec: monitoringv1.AlertmanagerSpec{},
@@ -520,10 +520,10 @@ func TestSidecarsNoCPULimits(t *testing.T) {
 
 func TestSidecarsNoMemoryLimits(t *testing.T) {
 	testConfig := Config{
-		ConfigReloaderImage:          "jimmidyson/configmap-reload:latest",
-		ConfigReloaderCPU:            "100m",
-		ConfigReloaderMemory:         "0",
-		AlertmanagerDefaultBaseImage: "quay.io/prometheus/alertmanager",
+		ConfigReloaderImage:      "jimmidyson/configmap-reload:latest",
+		ConfigReloaderCPU:        "100m",
+		ConfigReloaderMemory:     "0",
+		AlertmanagerDefaultImage: "quay.io/prometheus/alertmanager",
 	}
 	sset, err := makeStatefulSet(&monitoringv1.Alertmanager{
 		Spec: monitoringv1.AlertmanagerSpec{},

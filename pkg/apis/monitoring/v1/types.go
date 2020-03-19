@@ -122,13 +122,10 @@ type PrometheusSpec struct {
 	// When a Prometheus deployment is paused, no actions except for deletion
 	// will be performed on the underlying objects.
 	Paused bool `json:"paused,omitempty"`
-	// Image if specified has precedence over baseImage, tag and sha
-	// combinations. Specifying the version is still necessary to ensure the
+	// Image to use for a Prometheus deployment. Specifying the version is still necessary to ensure the
 	// Prometheus Operator knows what version of Prometheus is being
 	// configured.
 	Image *string `json:"image,omitempty"`
-	// Base image to use for a Prometheus deployment.
-	BaseImage string `json:"baseImage,omitempty"`
 	// An optional list of references to secrets in the same namespace
 	// to use for pulling prometheus and alertmanager images from registries
 	// see http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod
@@ -391,8 +388,7 @@ type QuerySpec struct {
 // ThanosSpec defines parameters for a Prometheus server within a Thanos deployment.
 // +k8s:openapi-gen=true
 type ThanosSpec struct {
-	// Image if specified has precedence over baseImage, tag and sha
-	// combinations. Specifying the version is still necessary to ensure the
+	// Image to use for a Prometheus deployment. Specifying the version is still necessary to ensure the
 	// Prometheus Operator knows what version of Thanos is being
 	// configured.
 	Image *string `json:"image,omitempty"`
@@ -405,8 +401,6 @@ type ThanosSpec struct {
 	// Similar to a tag, but the SHA explicitly deploys an immutable container image.
 	// Version and Tag are ignored if SHA is set.
 	SHA *string `json:"sha,omitempty"`
-	// Thanos base image if other than default.
-	BaseImage *string `json:"baseImage,omitempty"`
 	// Resources defines the resource requirements for the Thanos sidecar.
 	// If not provided, no requests/limits will be set
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
@@ -891,8 +885,7 @@ type Alertmanager struct {
 type AlertmanagerSpec struct {
 	// PodMetadata configures Labels and Annotations which are propagated to the alertmanager pods.
 	PodMetadata *PodMeta `json:"podMetadata,omitempty"`
-	// Image if specified has precedence over baseImage, tag and sha
-	// combinations. Specifying the version is still necessary to ensure the
+	// Image to use for a Prometheus deployment. Specifying the version is still necessary to ensure the
 	// Prometheus Operator knows what version of Alertmanager is being
 	// configured.
 	Image *string `json:"image,omitempty"`
@@ -905,8 +898,6 @@ type AlertmanagerSpec struct {
 	// Similar to a tag, but the SHA explicitly deploys an immutable container image.
 	// Version and Tag are ignored if SHA is set.
 	SHA string `json:"sha,omitempty"`
-	// Base image that is used to deploy pods, without tag.
-	BaseImage string `json:"baseImage,omitempty"`
 	// An optional list of references to secrets in the same namespace
 	// to use for pulling prometheus and alertmanager images from registries
 	// see http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod

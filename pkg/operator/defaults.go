@@ -20,11 +20,9 @@ import (
 
 const (
 	DefaultAlertmanagerVersion    = "v0.20.0"
-	DefaultAlertmanagerBaseImage  = "quay.io/prometheus/alertmanager"
-	DefaultAlertmanagerImage      = DefaultAlertmanagerBaseImage + ":" + DefaultAlertmanagerVersion
+	DefaultAlertmanagerImage      = "quay.io/prometheus/alertmanager"
 	DefaultThanosVersion          = "v0.11.0"
-	DefaultThanosBaseImage        = "quay.io/thanos/thanos"
-	DefaultThanosImage            = DefaultThanosBaseImage + ":" + DefaultThanosVersion
+	DefaultThanosImage            = "quay.io/thanos/thanos"
 	DefaultConfigMapReloaderImage = "jimmidyson/configmap-reload:v0.3.0"
 )
 
@@ -68,7 +66,6 @@ var (
 		"v2.15.2",
 		"v2.16.0",
 	}
-	DefaultPrometheusVersion   = PrometheusCompatibilityMatrix[len(PrometheusCompatibilityMatrix)-1]
-	DefaultPrometheusBaseImage = "quay.io/prometheus/prometheus"
-	DefaultPrometheusImage     = DefaultAlertmanagerBaseImage + ":" + DefaultPrometheusVersion
+	DefaultPrometheusVersion = PrometheusCompatibilityMatrix[len(PrometheusCompatibilityMatrix)-1]
+	DefaultPrometheusImage   = "quay.io/prometheus/prometheus"
 )

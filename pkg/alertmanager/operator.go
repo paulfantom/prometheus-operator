@@ -72,18 +72,18 @@ type Operator struct {
 }
 
 type Config struct {
-	Host                         string
-	LocalHost                    string
-	ConfigReloaderImage          string
-	ConfigReloaderCPU            string
-	ConfigReloaderMemory         string
-	AlertmanagerDefaultBaseImage string
-	Namespaces                   prometheusoperator.Namespaces
-	Labels                       prometheusoperator.Labels
-	CrdKinds                     monitoringv1.CrdKinds
-	EnableValidation             bool
-	ManageCRDs                   bool
-	AlertManagerSelector         string
+	Host                     string
+	LocalHost                string
+	ConfigReloaderImage      string
+	ConfigReloaderCPU        string
+	ConfigReloaderMemory     string
+	AlertmanagerDefaultImage string
+	Namespaces               prometheusoperator.Namespaces
+	Labels                   prometheusoperator.Labels
+	CrdKinds                 monitoringv1.CrdKinds
+	EnableValidation         bool
+	ManageCRDs               bool
+	AlertManagerSelector     string
 }
 
 // New creates a new controller.
@@ -116,18 +116,18 @@ func New(c prometheusoperator.Config, logger log.Logger, r prometheus.Registerer
 		queue:     workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "alertmanager"),
 		metrics:   operator.NewMetrics("alertmanager", r),
 		config: Config{
-			Host:                         c.Host,
-			LocalHost:                    c.LocalHost,
-			ConfigReloaderImage:          c.ConfigReloaderImage,
-			ConfigReloaderCPU:            c.ConfigReloaderCPU,
-			ConfigReloaderMemory:         c.ConfigReloaderMemory,
-			AlertmanagerDefaultBaseImage: c.AlertmanagerDefaultBaseImage,
-			Namespaces:                   c.Namespaces,
-			CrdKinds:                     c.CrdKinds,
-			Labels:                       c.Labels,
-			EnableValidation:             c.EnableValidation,
-			ManageCRDs:                   c.ManageCRDs,
-			AlertManagerSelector:         c.AlertManagerSelector,
+			Host:                     c.Host,
+			LocalHost:                c.LocalHost,
+			ConfigReloaderImage:      c.ConfigReloaderImage,
+			ConfigReloaderCPU:        c.ConfigReloaderCPU,
+			ConfigReloaderMemory:     c.ConfigReloaderMemory,
+			AlertmanagerDefaultImage: c.AlertmanagerDefaultImage,
+			Namespaces:               c.Namespaces,
+			CrdKinds:                 c.CrdKinds,
+			Labels:                   c.Labels,
+			EnableValidation:         c.EnableValidation,
+			ManageCRDs:               c.ManageCRDs,
+			AlertManagerSelector:     c.AlertManagerSelector,
 		},
 	}
 
@@ -507,20 +507,6 @@ func (c *Operator) sync(key string) error {
 	}
 
 	return nil
-}
-
-//checkAlertmanagerSpecDeprecation checks for deprecated fields in the prometheus spec and logs a warning if applicable
-func checkAlertmanagerSpecDeprecation(key string, a *monitoringv1.Alertmanager, logger log.Logger) {
-	deprecationWarningf := "alertmanager key=%v, field %v is deprecated, '%v' field should be used instead"
-	if a.Spec.BaseImage != "" {
-		level.Warn(logger).Log("msg", fmt.Sprintf(deprecationWarningf, key, "spec.baseImage", "spec.image"))
-	}
-	if a.Spec.Tag != "" {
-		level.Warn(logger).Log("msg", fmt.Sprintf(deprecationWarningf, key, "spec.tag", "spec.image"))
-	}
-	if a.Spec.SHA != "" {
-		level.Warn(logger).Log("msg", fmt.Sprintf(deprecationWarningf, key, "spec.sha", "spec.image"))
-	}
 }
 
 func ListOptions(name string) metav1.ListOptions {

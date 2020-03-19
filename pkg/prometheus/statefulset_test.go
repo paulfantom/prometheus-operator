@@ -36,8 +36,8 @@ var (
 		ConfigReloaderCPU:             "100m",
 		ConfigReloaderMemory:          "25Mi",
 		PrometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:latest",
-		PrometheusDefaultBaseImage:    "quay.io/prometheus/prometheus",
-		ThanosDefaultBaseImage:        "quay.io/thanos/thanos",
+		PrometheusDefaultImage:        "quay.io/prometheus/prometheus",
+		ThanosDefaultImage:            "quay.io/thanos/thanos",
 	}
 )
 
@@ -850,8 +850,8 @@ func TestSidecarsNoCPULimits(t *testing.T) {
 		ConfigReloaderCPU:             "0",
 		ConfigReloaderMemory:          "50Mi",
 		PrometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:latest",
-		PrometheusDefaultBaseImage:    "quay.io/prometheus/prometheus",
-		ThanosDefaultBaseImage:        "quay.io/thanos/thanos:v0.7.0",
+		PrometheusDefaultImage:        "quay.io/prometheus/prometheus",
+		ThanosDefaultImage:            "quay.io/thanos/thanos:v0.7.0",
 	}
 	sset, err := makeStatefulSet(monitoringv1.Prometheus{
 		Spec: monitoringv1.PrometheusSpec{},
@@ -881,8 +881,8 @@ func TestSidecarsNoMemoryLimits(t *testing.T) {
 		ConfigReloaderCPU:             "100m",
 		ConfigReloaderMemory:          "0",
 		PrometheusConfigReloaderImage: "quay.io/coreos/prometheus-config-reloader:latest",
-		PrometheusDefaultBaseImage:    "quay.io/prometheus/prometheus",
-		ThanosDefaultBaseImage:        "quay.io/thanos/thanos:v0.7.0",
+		PrometheusDefaultImage:        "quay.io/prometheus/prometheus",
+		ThanosDefaultImage:            "quay.io/thanos/thanos:v0.7.0",
 	}
 	sset, err := makeStatefulSet(monitoringv1.Prometheus{
 		Spec: monitoringv1.PrometheusSpec{},

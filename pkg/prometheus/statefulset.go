@@ -77,8 +77,8 @@ func makeStatefulSet(
 	// Ideally we would do it before storing but that's currently not possible.
 	// Potentially an update handler on first insertion.
 
-	if p.Spec.BaseImage == "" {
-		p.Spec.BaseImage = config.PrometheusDefaultBaseImage
+	if p.Spec.Image == "" {
+		p.Spec.Image = config.PrometheusDefaultImage
 	}
 	if p.Spec.Version == "" {
 		p.Spec.Version = operator.DefaultPrometheusVersion
@@ -718,16 +718,16 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMapName
 		// If the tag is specified, we use the tag to identify the container image.
 		// If the sha is specified, we use the sha to identify the container image,
 		// as it has even stronger immutable guarantees to identify the image.
-		thanosBaseImage := c.ThanosDefaultBaseImage
-		if p.Spec.Thanos.BaseImage != nil {
-			thanosBaseImage = *p.Spec.Thanos.BaseImage
+		thanosImage := c.ThanosDefaultImage
+		if p.Spec.Thanos.Image != nil {
+			thanosImage = *p.Spec.Thanos.Image
 		}
-		thanosImage := fmt.Sprintf("%s:%s", thanosBaseImage, *p.Spec.Thanos.Version)
+		thanosImage := fmt.Sprintf("%s:%s", thanosImage, *p.Spec.Thanos.Version)
 		if p.Spec.Thanos.Tag != nil {
-			thanosImage = fmt.Sprintf("%s:%s", thanosBaseImage, *p.Spec.Thanos.Tag)
+			thanosImage = fmt.Sprintf("%s:%s", thanosImage, *p.Spec.Thanos.Tag)
 		}
 		if p.Spec.Thanos.SHA != nil {
-			thanosImage = fmt.Sprintf("%s@sha256:%s", thanosBaseImage, *p.Spec.Thanos.SHA)
+			thanosImage = fmt.Sprintf("%s@sha256:%s", thanosImage, *p.Spec.Thanos.SHA)
 		}
 		if p.Spec.Thanos.Image != nil && *p.Spec.Thanos.Image != "" {
 			thanosImage = *p.Spec.Thanos.Image
@@ -831,12 +831,12 @@ func makeStatefulSetSpec(p monitoringv1.Prometheus, c *Config, ruleConfigMapName
 	// If the tag is specified, we use the tag to identify the container image.
 	// If the sha is specified, we use the sha to identify the container image,
 	// as it has even stronger immutable guarantees to identify the image.
-	prometheusImage := fmt.Sprintf("%s:%s", p.Spec.BaseImage, p.Spec.Version)
+	prometheusImage := fmt.Sprintf("%s:%s", p.Spec.Image, p.Spec.Version)
 	if p.Spec.Tag != "" {
-		prometheusImage = fmt.Sprintf("%s:%s", p.Spec.BaseImage, p.Spec.Tag)
+		prometheusImage = fmt.Sprintf("%s:%s", p.Spec.Image, p.Spec.Tag)
 	}
 	if p.Spec.SHA != "" {
-		prometheusImage = fmt.Sprintf("%s@sha256:%s", p.Spec.BaseImage, p.Spec.SHA)
+		prometheusImage = fmt.Sprintf("%s@sha256:%s", p.Spec.Image, p.Spec.SHA)
 	}
 	if p.Spec.Image != nil && *p.Spec.Image != "" {
 		prometheusImage = *p.Spec.Image

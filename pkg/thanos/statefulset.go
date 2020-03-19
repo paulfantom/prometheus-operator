@@ -54,7 +54,7 @@ var (
 func makeStatefulSet(tr *monitoringv1.ThanosRuler, config Config, ruleConfigMapNames []string, inputHash string) (*appsv1.StatefulSet, error) {
 
 	if tr.Spec.Image == "" {
-		tr.Spec.Image = config.ThanosDefaultBaseImage
+		tr.Spec.Image = config.ThanosDefaultImage
 	}
 	if !strings.Contains(tr.Spec.Image, ":") {
 		tr.Spec.Image = tr.Spec.Image + ":" + operator.DefaultThanosVersion
