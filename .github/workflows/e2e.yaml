@@ -1,0 +1,71 @@
+name: end-to-end
+on:
+  - push
+  - pull_request
+jobs:
+  prometheus:
+    runs-on: ubuntu-latest
+    name: prometheus tests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Try the cluster !
+      run: kubectl get pods -A
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        make build image
+        echo -n "verifying images:"
+        docker images
+    - name: Apply minikube RBAC
+      run: |
+        kubectl apply -f scripts/minikube-rbac.yaml
+    - name: Run tests
+      run:
+        EXCLUDE_ALERTMANAGER_TESTS=true EXCLUDE_THANOS_TESTS=true make test-e2e
+  alertmanager:
+    runs-on: ubuntu-latest
+    name: prometheus tests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Try the cluster !
+      run: kubectl get pods -A
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        make build image
+        echo -n "verifying images:"
+        docker images
+    - name: Apply minikube RBAC
+      run: |
+        kubectl apply -f scripts/minikube-rbac.yaml
+    - name: Run tests
+      run:
+        EXCLUDE_PROMETHEUS_TESTS=true EXCLUDE_THANOS_TESTS=true make test-e2e
+  thanosruler:
+    runs-on: ubuntu-latest
+    name: prometheus tests
+    steps:
+    - uses: actions/checkout@v2
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Try the cluster !
+      run: kubectl get pods -A
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        make build image
+        echo -n "verifying images:"
+        docker images
+    - name: Apply minikube RBAC
+      run: |
+        kubectl apply -f scripts/minikube-rbac.yaml
+    - name: Run tests
+      run:
+        EXCLUDE_ALERTMANAGER_TESTS=true EXCLUDE_PROMETHEUS_TESTS=true make test-e2e
