@@ -6,7 +6,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/brancz/kube-rbac-proxy v0.5.0
 	github.com/docker/distribution v2.7.1+incompatible
-	github.com/evanphx/json-patch v4.5.0+incompatible
+	github.com/evanphx/json-patch v4.9.0+incompatible
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-kit/kit v0.10.0
 	github.com/go-openapi/swag v0.19.9
@@ -27,13 +27,13 @@ require (
 	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/yaml.v2 v2.3.0
-	k8s.io/api v0.18.8
+	k8s.io/api v0.19.2
 	k8s.io/apiextensions-apiserver v0.18.2
-	k8s.io/apimachinery v0.18.8
-	k8s.io/client-go v0.18.8
+	k8s.io/apimachinery v0.19.2
+	k8s.io/client-go v0.19.2
 	k8s.io/component-base v0.18.2
 	k8s.io/klog v1.0.0
-	k8s.io/utils v0.0.0-20200414100711-2df71ebbae66
+	k8s.io/utils v0.0.0-20200729134348-d5654de09c73
 )
 
 replace github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring => ./pkg/apis/monitoring
