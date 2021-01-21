@@ -18,14 +18,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	jsonpatch "github.com/evanphx/json-patch/v5"
 	"io/ioutil"
-	v1 "k8s.io/api/admission/v1"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 	"testing"
+
+	jsonpatch "github.com/evanphx/json-patch/v5"
+	v1 "k8s.io/api/admission/v1"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -55,6 +56,17 @@ func TestMutateRuleNoAnnotations(t *testing.T) {
 	}
 }
 
+func TestMutateRulePartialResponseStrategy(t *testing.T) {
+	ts := server(api().servePrometheusRulesMutate)
+	defer ts.Close()
+
+	resp := send(t, ts, goodRulesWithPartialResponseStrategy)
+
+	if len(resp.Response.Patch) == 0 {
+		t.Errorf("Expected patch to be allowed but it was not")
+	}
+}
+
 func TestAdmitGoodRule(t *testing.T) {
 	ts := server(api().servePrometheusRulesValidate)
 	defer ts.Close()
@@ -71,6 +83,17 @@ func TestAdmitGoodRuleExternalLabels(t *testing.T) {
 	defer ts.Close()
 
 	resp := send(t, ts, goodRulesWithExternalLabelsInAnnotations)
+
+	if !resp.Response.Allowed {
+		t.Errorf("Expected admission to be allowed but it was not")
+	}
+}
+
+func TestAdmitGoodRulePartialResponseStrategy(t *testing.T) {
+	ts := server(api().servePrometheusRulesValidate)
+	defer ts.Close()
+
+	resp := send(t, ts, goodRulesWithPartialResponseStrategy)
 
 	if !resp.Response.Allowed {
 		t.Errorf("Expected admission to be allowed but it was not")
@@ -315,6 +338,69 @@ var goodRulesWithExternalLabelsInAnnotations = []byte(`
                 "annotations": {
                   "message": "Test externalLabels {{ $externalLabels.cluster }}"
                 },
+                "expr": "vector(1)",
+                "for": "5m",
+                "labels": {
+                  "severity": "critical"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "oldObject": null,
+    "dryRun": false
+  }
+}
+`)
+
+var goodRulesWithPartialResponseStrategy = []byte(`
+{
+  "kind": "AdmissionReview",
+  "apiVersion": "admission.k8s.io/v1beta1",
+  "request": {
+    "uid": "87c5df7f-5090-11e9-b9b4-02425473f309",
+    "kind": {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "kind": "PrometheusRule"
+    },
+    "resource": {
+      "group": "monitoring.coreos.com",
+      "version": "v1",
+      "resource": "prometheusrules"
+    },
+    "namespace": "monitoring",
+    "operation": "CREATE",
+    "userInfo": {
+      "username": "kubernetes-admin",
+      "groups": [
+        "system:masters",
+        "system:authenticated"
+      ]
+    },
+    "object": {
+      "apiVersion": "monitoring.coreos.com/v1",
+      "kind": "PrometheusRule",
+      "metadata": {
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"monitoring.coreos.com/v1\",\"kind\":\"PrometheusRule\",\"metadata\":{\"annotations\":{},\"name\":\"test\",\"namespace\":\"monitoring\"},\"spec\":{\"groups\":[{\"name\":\"test.rules\",\"rules\":[{\"alert\":\"Test\",\"annotations\":{\"message\":\"Test rule\"},\"expr\":\"vector(1))\",\"for\":\"5m\",\"labels\":{\"severity\":\"critical\"}}]}]}}\n"
+        },
+        "creationTimestamp": "2019-03-27T13:02:09Z",
+        "generation": 1,
+        "name": "test",
+        "namespace": "monitoring",
+        "uid": "87c5d31d-5090-11e9-b9b4-02425473f309"
+      },
+      "spec": {
+        "groups": [
+          {
+            "name": "test.rules",
+            "partial_response_strategy": "warn",
+            "rules": [
+              {
+                "alert": "Test",
                 "expr": "vector(1)",
                 "for": "5m",
                 "labels": {

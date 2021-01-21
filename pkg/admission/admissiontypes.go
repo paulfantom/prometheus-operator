@@ -34,7 +34,8 @@ type RuleGroups struct {
 }
 
 type RuleGroup struct {
-	Rules []Rule `json:"rules"`
+	Rules                   []Rule `json:"rules"`
+	PartialResponseStrategy string `json:"partial_response_strategy,omitempty"`
 }
 
 type Rule struct {
