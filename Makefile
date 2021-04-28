@@ -141,14 +141,14 @@ image: .hack-operator-image .hack-prometheus-config-reloader-image
 # Create empty target file, for the sole purpose of recording when this target
 # was last executed via the last-modification timestamp on the file. See
 # https://www.gnu.org/software/make/manual/make.html#Empty-Targets
-	docker build --build-arg ARCH=$(ARCH) --build-arg OS=$(GOOS) -t $(REPO):$(TAG) .
+	docker build --platform=$(GOARCH) --build-arg ARCH=$(ARCH) --build-arg OS=$(GOOS) -t $(REPO):$(TAG) .
 	touch $@
 
 .hack-prometheus-config-reloader-image: cmd/prometheus-config-reloader/Dockerfile prometheus-config-reloader
 # Create empty target file, for the sole purpose of recording when this target
 # was last executed via the last-modification timestamp on the file. See
 # https://www.gnu.org/software/make/manual/make.html#Empty-Targets
-	docker build --build-arg ARCH=$(ARCH) --build-arg OS=$(GOOS) -t $(REPO_PROMETHEUS_CONFIG_RELOADER):$(TAG) -f cmd/prometheus-config-reloader/Dockerfile .
+	docker build --platform=$(GOARCH) --build-arg ARCH=$(ARCH) --build-arg OS=$(GOOS) -t $(REPO_PROMETHEUS_CONFIG_RELOADER):$(TAG) -f cmd/prometheus-config-reloader/Dockerfile .
 	touch $@
 
 .PHONY: update-go-deps
