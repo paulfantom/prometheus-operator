@@ -22,7 +22,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func createServiceAccount(kubeClient kubernetes.Interface, namespace string, relativPath string) (FinalizerFn, error) {
+func CreateServiceAccount(kubeClient kubernetes.Interface, namespace string, relativPath string) (finalizerFn, error) {
 	finalizerFn := func() error { return DeleteServiceAccount(kubeClient, namespace, relativPath) }
 
 	serviceAccount, err := parseServiceAccountYaml(relativPath)

@@ -9,7 +9,7 @@ labels: kind/bug
 Feel free to ask questions in #prometheus-operator on Kubernetes Slack!
 
 Note: This repository is about prometheus-operator itself, if you have questions about:
-- helm installation, go to https://github.com/prometheus-community/helm-charts repository
+- helm installation, go to https://github.com/helm/charts repository
 - kube-prometheus setup, go to https://github.com/prometheus-operator/kube-prometheus
 
 -->
@@ -26,7 +26,6 @@ Note: This repository is about prometheus-operator itself, if you have questions
 
     `Insert image tag or Git SHA here`
     <!-- Try kubectl -n monitoring describe deployment prometheus-operator -->
-    <!-- Note: please provide operator version and not kube-prometheus/helm chart version -->
 
 * Kubernetes version information:
 

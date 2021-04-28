@@ -30,9 +30,6 @@ import (
 	"testing"
 	"time"
 
-	appsv1 "k8s.io/api/apps/v1"
-
-	"google.golang.org/protobuf/proto"
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -47,6 +44,7 @@ import (
 	"github.com/prometheus-operator/prometheus-operator/pkg/prometheus"
 	testFramework "github.com/prometheus-operator/prometheus-operator/test/framework"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/pkg/errors"
 )
@@ -826,7 +824,7 @@ func testPromScaleUpDownCluster(t *testing.T) {
 	}
 
 	p.Spec.Replicas = proto.Int32(2)
-	_, err = framework.UpdatePrometheusAndWaitUntilReady(ns, p)
+	p, err = framework.UpdatePrometheusAndWaitUntilReady(ns, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1048,7 +1046,7 @@ func testPromStorageUpdate(t *testing.T) {
 			},
 		},
 	}
-	_, err = framework.MonClientV1.Prometheuses(ns).Update(context.TODO(), p, metav1.UpdateOptions{})
+	p, err = framework.MonClientV1.Prometheuses(ns).Update(context.TODO(), p, metav1.UpdateOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1356,7 +1354,7 @@ func testPromReloadRules(t *testing.T) {
 			},
 		},
 	}
-	_, err = framework.UpdateRule(ns, ruleFile)
+	ruleFile, err = framework.UpdateRule(ns, ruleFile)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1728,7 +1726,6 @@ func testPromOnlyUpdatedOnRelevantChanges(t *testing.T) {
 		resourceDefinitions[i].Versions = map[string]interface{}{}
 	}
 
-	errc := make(chan error, 1)
 	go func() {
 		for {
 			select {
@@ -1744,8 +1741,7 @@ func testPromOnlyUpdatedOnRelevantChanges(t *testing.T) {
 					}
 					if err != nil {
 						cancel()
-						errc <- err
-						return
+						t.Fatal(err)
 					}
 
 					resourceDefinitions[i].Versions[resource.GetResourceVersion()] = resource
@@ -1792,12 +1788,6 @@ func testPromOnlyUpdatedOnRelevantChanges(t *testing.T) {
 
 	cancel()
 
-	select {
-	case err := <-errc:
-		t.Fatal(err)
-	default:
-	}
-
 	for _, resource := range resourceDefinitions {
 		if len(resource.Versions) > resource.MaxExpectedChanges || len(resource.Versions) < 1 {
 			var previous interface{}
@@ -1818,188 +1808,6 @@ func testPromOnlyUpdatedOnRelevantChanges(t *testing.T) {
 			)
 		}
 	}
-}
-
-func testPromPreserveUserAddedMetadata(t *testing.T) {
-	t.Parallel()
-
-	ctx := framework.NewTestCtx(t)
-	defer ctx.Cleanup(t)
-	ns := ctx.CreateNamespace(t, framework.KubeClient)
-	ctx.SetupPrometheusRBAC(t, ns, framework.KubeClient)
-
-	name := "test"
-
-	prometheusCRD := framework.MakeBasicPrometheus(ns, name, name, 1)
-	prometheusCRD.Namespace = ns
-
-	prometheusCRD, err := framework.CreatePrometheusAndWaitUntilReady(ns, prometheusCRD)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	updatedLabels := map[string]string{
-		"user-defined-label": "custom-label-value",
-	}
-	updatedAnnotations := map[string]string{
-		"user-defined-annotation": "custom-annotation-val",
-	}
-
-	svcClient := framework.KubeClient.CoreV1().Services(ns)
-	endpointsClient := framework.KubeClient.CoreV1().Endpoints(ns)
-	ssetClient := framework.KubeClient.AppsV1().StatefulSets(ns)
-	secretClient := framework.KubeClient.CoreV1().Secrets(ns)
-
-	resourceConfigs := []struct {
-		name   string
-		get    func() (metav1.Object, error)
-		update func(object metav1.Object) (metav1.Object, error)
-	}{
-		{
-			name: "prometheus-operated service",
-			get: func() (metav1.Object, error) {
-				return svcClient.Get(context.TODO(), "prometheus-operated", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return svcClient.Update(context.TODO(), asService(t, object), metav1.UpdateOptions{})
-			},
-		},
-		{
-			name: "prometheus stateful set",
-			get: func() (metav1.Object, error) {
-				return ssetClient.Get(context.TODO(), "prometheus-test", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return ssetClient.Update(context.TODO(), asStatefulSet(t, object), metav1.UpdateOptions{})
-			},
-		},
-		{
-			name: "prometheus-operated endpoints",
-			get: func() (metav1.Object, error) {
-				return endpointsClient.Get(context.TODO(), "prometheus-operated", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return endpointsClient.Update(context.TODO(), asEndpoints(t, object), metav1.UpdateOptions{})
-			},
-		},
-		{
-			name: "prometheus secret",
-			get: func() (metav1.Object, error) {
-				return secretClient.Get(context.TODO(), "prometheus-test", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return secretClient.Update(context.TODO(), asSecret(t, object), metav1.UpdateOptions{})
-			},
-		},
-	}
-
-	for _, rConf := range resourceConfigs {
-		res, err := rConf.get()
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		updateObjectLabels(res, updatedLabels)
-		updateObjectAnnotations(res, updatedAnnotations)
-
-		_, err = rConf.update(res)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	// Ensure resource reconciles
-	prometheusCRD.Spec.Replicas = proto.Int32(2)
-	_, err = framework.UpdatePrometheusAndWaitUntilReady(ns, prometheusCRD)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Assert labels preserved
-	for _, rConf := range resourceConfigs {
-		res, err := rConf.get()
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		labels := res.GetLabels()
-		if !containsValues(labels, updatedLabels) {
-			t.Errorf("%s: labels do not contain updated labels, found: %q, should contain: %q", rConf.name, labels, updatedLabels)
-		}
-
-		annotations := res.GetAnnotations()
-		if !containsValues(annotations, updatedAnnotations) {
-			t.Fatalf("%s: annotations do not contain updated annotations, found: %q, should contain: %q", rConf.name, annotations, updatedAnnotations)
-		}
-	}
-
-	// Cleanup
-	if err := framework.DeletePrometheusAndWaitUntilGone(ns, name); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func asService(t *testing.T, object metav1.Object) *v1.Service {
-	svc, ok := object.(*v1.Service)
-	if !ok {
-		t.Fatalf("expected service got %T", object)
-	}
-	return svc
-}
-
-func asEndpoints(t *testing.T, object metav1.Object) *v1.Endpoints {
-	endpoints, ok := object.(*v1.Endpoints)
-	if !ok {
-		t.Fatalf("expected endpoints got %T", object)
-	}
-	return endpoints
-}
-
-func asStatefulSet(t *testing.T, object metav1.Object) *appsv1.StatefulSet {
-	sset, ok := object.(*appsv1.StatefulSet)
-	if !ok {
-		t.Fatalf("expected stateful set got %T", object)
-	}
-	return sset
-}
-
-func asSecret(t *testing.T, object metav1.Object) *v1.Secret {
-	sec, ok := object.(*v1.Secret)
-	if !ok {
-		t.Fatalf("expected secret set got %T", object)
-	}
-	return sec
-}
-
-func containsValues(got, expected map[string]string) bool {
-	for k, v := range expected {
-		if got[k] != v {
-			return false
-		}
-	}
-	return true
-}
-
-func updateObjectLabels(object metav1.Object, labels map[string]string) {
-	current := object.GetLabels()
-	current = mergeMap(current, labels)
-	object.SetLabels(current)
-}
-
-func updateObjectAnnotations(object metav1.Object, annotations map[string]string) {
-	current := object.GetAnnotations()
-	current = mergeMap(current, annotations)
-	object.SetAnnotations(current)
-}
-
-func mergeMap(a, b map[string]string) map[string]string {
-	if a == nil {
-		a = make(map[string]string, len(b))
-	}
-	for k, v := range b {
-		a[k] = v
-	}
-	return a
 }
 
 func testPromWhenDeleteCRDCleanUpViaOwnerRef(t *testing.T) {
@@ -2055,7 +1863,7 @@ func testPromDiscovery(t *testing.T) {
 	}
 
 	p := framework.MakeBasicPrometheus(ns, prometheusName, group, 1)
-	_, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
+	p, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2093,7 +1901,7 @@ func testPromSharedResourcesReconciliation(t *testing.T) {
 	// Create 2 Prometheus different Prometheus instances that watch the service monitor created above.
 	for _, prometheusName := range []string{"test", "test2"} {
 		p := framework.MakeBasicPrometheus(ns, prometheusName, "reconcile-test", 1)
-		_, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
+		p, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2150,7 +1958,7 @@ func testShardingProvisioning(t *testing.T) {
 	p := framework.MakeBasicPrometheus(ns, prometheusName, group, 1)
 	shards := int32(2)
 	p.Spec.Shards = &shards
-	_, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
+	p, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -2291,7 +2099,7 @@ func testPromAlertmanagerDiscovery(t *testing.T) {
 
 	p := framework.MakeBasicPrometheus(ns, prometheusName, group, 1)
 	framework.AddAlertingToPrometheus(p, ns, alertmanagerName)
-	_, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
+	p, err := framework.CreatePrometheusAndWaitUntilReady(ns, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -3346,10 +3154,10 @@ func testPromStaticProbe(t *testing.T) {
 	group := "probe-test"
 	svc := framework.MakePrometheusService(prometheusName, group, v1.ServiceTypeClusterIP)
 
-	proberURL := blackboxExporterName + ":9115"
+	proberUrl := blackboxExporterName + ":9115"
 	targets := []string{svc.Name + ":9090"}
 
-	probe := framework.MakeBasicStaticProbe(group, proberURL, targets)
+	probe := framework.MakeBasicStaticProbe(group, proberUrl, targets)
 	if _, err := framework.MonClientV1.Probes(ns).Create(context.TODO(), probe, metav1.CreateOptions{}); err != nil {
 		t.Fatal("Creating Probe failed: ", err)
 	}
@@ -3370,7 +3178,7 @@ func testPromStaticProbe(t *testing.T) {
 		ctx.AddFinalizerFn(finalizerFn)
 	}
 
-	expectedURL := url.URL{Host: proberURL, Scheme: "http", Path: "/probe"}
+	expectedURL := url.URL{Host: proberUrl, Scheme: "http", Path: "/probe"}
 	q := expectedURL.Query()
 	q.Set("module", "http_2xx")
 	q.Set("target", targets[0])
@@ -3640,7 +3448,7 @@ func isAlertmanagerDiscoveryWorking(ns, promSVCName, alertmanagerName string) fu
 		}
 		expectedAlertmanagerTargets := []string{}
 		for _, p := range pods.Items {
-			expectedAlertmanagerTargets = append(expectedAlertmanagerTargets, fmt.Sprintf("http://%s:9093/api/v2/alerts", p.Status.PodIP))
+			expectedAlertmanagerTargets = append(expectedAlertmanagerTargets, fmt.Sprintf("http://%s:9093/api/v1/alerts", p.Status.PodIP))
 		}
 
 		response, err := framework.PrometheusSVCGetRequest(ns, promSVCName, "/api/v1/alertmanagers", map[string]string{})

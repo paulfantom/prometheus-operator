@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	_ = http.ListenAndServe(":5001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.ListenAndServe(":5001", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Alertmanager Notification Payload Received")
 	}))
 }

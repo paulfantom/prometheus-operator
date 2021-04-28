@@ -22,7 +22,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 )
 
-func createClusterRoleBinding(kubeClient kubernetes.Interface, ns string, relativePath string) (FinalizerFn, error) {
+func CreateClusterRoleBinding(kubeClient kubernetes.Interface, ns string, relativePath string) (finalizerFn, error) {
 	finalizerFn := func() error { return DeleteClusterRoleBinding(kubeClient, ns, relativePath) }
 	clusterRoleBinding, err := parseClusterRoleBindingYaml(relativePath)
 	if err != nil {

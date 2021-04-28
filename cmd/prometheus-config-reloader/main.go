@@ -37,7 +37,7 @@ import (
 
 const (
 	logFormatLogfmt = "logfmt"
-	logFormatJSON   = "json"
+	logFormatJson   = "json"
 
 	logLevelDebug = "debug"
 	logLevelInfo  = "info"
@@ -56,7 +56,7 @@ const (
 var (
 	availableLogFormats = []string{
 		logFormatLogfmt,
-		logFormatJSON,
+		logFormatJson,
 	}
 	availableLogLevels = []string{
 		logLevelDebug,
@@ -118,7 +118,7 @@ func main() {
 
 	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
 
-	if *logFormat == logFormatJSON {
+	if *logFormat == logFormatJson {
 		logger = log.NewJSONLogger(log.NewSyncWriter(os.Stdout))
 	}
 

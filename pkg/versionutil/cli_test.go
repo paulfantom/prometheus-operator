@@ -19,7 +19,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"runtime"
 	"testing"
 
 	"github.com/prometheus/common/version"
@@ -51,7 +50,7 @@ func TestShouldPrintVersion(t *testing.T) {
 					"  build user:       test-value\n"+
 					"  build date:       test-value\n"+
 					"  go version:       test-value\n"+
-					"  platform:         "+runtime.GOOS+"/amd64", program),
+					"  platform:         linux/amd64", program),
 		},
 	}
 	for tn, tc := range tests {

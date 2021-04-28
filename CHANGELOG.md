@@ -1,34 +1,3 @@
-## 0.47.0 / 2021-04-13
-
-The `--config-reloader-cpu` and `--config-reloader-memory` flags are deprecated
-and will be removed in v0.49.0. They are replaced respectively by the
-`--config-reloader-cpu-request`/`--config-reloader-cpu-limit` and
-`config-reloader-memory-request`/`config-reloader-memory-limit` flags.
-
-* [FEATURE] Add `enableFeatures` field to the Prometheus CRD for enabling feature flags. #3878
-* [FEATURE] Add `metadataConfig` field to the Prometheus CRD for configuring how remote-write sends metadata information. #3915
-* [FEATURE] Add support for TLS and authentication configuration to the Probe CRD. #3876
-* [ENHANCEMENT] Allow CPU requests/limits and memory requests/limits of the config reloader to be set independently. #3826
-* [ENHANCEMENT] Add rules validation to `po-lint`. #3894
-* [ENHANCEMENT] Add common Kubernetes labels to statefulset objects managed by the Prometheus operator. #3841
-* [ENHANCEMENT] Avoid unneeded synchronizations on Alertmanager updates. #3943 #3948
-* [ENHANCEMENT] Retain the original job's name `__tmp_prometheus_job_name label` in the generated scrape configurations. #3828
-* [BUGFIX] Fix `app.kubernetes.io/managed-by` label on kubelet endpoint object. #3902
-* [BUGFIX] Avoid name collisions in the generated Prometheus configuration. #3913
-* [BUGFIX] Restore `prometheus_operator_spec_replicas` metrics for Alertmanager and Thanos Ruler controllers. #3924
-* [BUGFIX] Allow `smtp_require_tls` to be false in Alertmanager configuration. #3960
-
-## 0.46.0 / 2021-02-24
-
-* [CHANGE] Drop support for Prometheus 1.x #2822
-* [FEATURE] Add relabelingConfigs to ProbeTargetStaticConfig #3817
-* [ENHANCEMENT] Add custom HTTP headers in remoteWrite-config #3851
-* [ENHANCEMENT] CRDs are now part of prometheus-operator group allowing `kubectl get prometheus-operator` operation #3843
-* [ENHANCEMENT] Support app.kubernetes.io/managed-by label to kubelet service and endpoint objects. #3834
-* [BUGFIX] Fix the loss of the `headers` key in AlertmanagerConfig. #3856
-* [BUGFIX] Preserve user-added labels and annotations on Service, Endpoint and StatefulSet resources managed by the operator. #3810
-* [BUGFIX] Do not require child routes in AlertmanagerConfig to have a receiver. #3749
-
 ## 0.45.0 / 2021-01-13
 
 * [CHANGE] Add schema validations to AlertmanagerConfig CRD. #3742

@@ -29,7 +29,7 @@ import (
 	testFramework "github.com/prometheus-operator/prometheus-operator/test/framework"
 )
 
-func testAlertmanagerInstanceNamespacesAllNs(t *testing.T) {
+func testAlertmanagerInstanceNamespaces_AllNs(t *testing.T) {
 	ctx := framework.NewTestCtx(t)
 	defer ctx.Cleanup(t)
 
@@ -72,7 +72,7 @@ func testAlertmanagerInstanceNamespacesAllNs(t *testing.T) {
 	}
 }
 
-func testAlertmanagerInstanceNamespacesDenyNs(t *testing.T) {
+func testAlertmanagerInstanceNamespaces_DenyNs(t *testing.T) {
 	ctx := framework.NewTestCtx(t)
 	defer ctx.Cleanup(t)
 
@@ -101,7 +101,7 @@ func testAlertmanagerInstanceNamespacesDenyNs(t *testing.T) {
 	}
 }
 
-func testAlertmanagerInstanceNamespacesAllowList(t *testing.T) {
+func testAlertmanagerInstanceNamespaces_AllowList(t *testing.T) {
 	ctx := framework.NewTestCtx(t)
 	defer ctx.Cleanup(t)
 

@@ -24,7 +24,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
-	"google.golang.org/protobuf/proto"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
@@ -35,6 +34,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/util/wait"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/prometheus-operator/prometheus-operator/pkg/alertmanager"
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	monitoringv1alpha1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1alpha1"
@@ -114,7 +114,7 @@ func testAMVersionMigration(t *testing.T) {
 	}
 
 	am.Spec.Version = "v0.16.2"
-	_, err = framework.UpdateAlertmanagerAndWaitUntilReady(ns, am)
+	am, err = framework.UpdateAlertmanagerAndWaitUntilReady(ns, am)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,7 +150,7 @@ func testAMStorageUpdate(t *testing.T) {
 		},
 	}
 
-	_, err = framework.MonClientV1.Alertmanagers(ns).Update(context.TODO(), am, metav1.UpdateOptions{})
+	am, err = framework.MonClientV1.Alertmanagers(ns).Update(context.TODO(), am, metav1.UpdateOptions{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -315,7 +315,7 @@ func testAMClusterGossipSilences(t *testing.T) {
 		}
 	}
 
-	silID, err := framework.CreateSilence(ns, "alertmanager-test-0")
+	silId, err := framework.CreateSilence(ns, "alertmanager-test-0")
 	if err != nil {
 		t.Fatalf("failed to create silence: %v", err)
 	}
@@ -331,8 +331,8 @@ func testAMClusterGossipSilences(t *testing.T) {
 				return false, nil
 			}
 
-			if *silences[0].ID != silID {
-				return false, errors.Errorf("expected silence id on alertmanager %v to match id of created silence '%v' but got %v", i, silID, *silences[0].ID)
+			if *silences[0].ID != silId {
+				return false, errors.Errorf("expected silence id on alertmanager %v to match id of created silence '%v' but got %v", i, silId, *silences[0].ID)
 			}
 			return true, nil
 		})
@@ -760,7 +760,7 @@ func testAlertmanagerConfigCRD(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	slackAPIURLSecret := &v1.Secret{
+	slackApiURLSecret := &v1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "s-receiver-api-url",
 		},
@@ -768,7 +768,7 @@ func testAlertmanagerConfigCRD(t *testing.T) {
 			"api-url": []byte("http://slack.example.com"),
 		},
 	}
-	if _, err := framework.KubeClient.CoreV1().Secrets(ns).Create(context.TODO(), slackAPIURLSecret, metav1.CreateOptions{}); err != nil {
+	if _, err := framework.KubeClient.CoreV1().Secrets(ns).Create(context.TODO(), slackApiURLSecret, metav1.CreateOptions{}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -856,10 +856,6 @@ func testAlertmanagerConfigCRD(t *testing.T) {
 							Name: testingSecret,
 						},
 						Key: testingSecretKey,
-					},
-					Headers: []monitoringv1alpha1.KeyValue{
-						{Key: "Subject", Value: "subject"},
-						{Key: "Comment", Value: "comment"},
 					},
 				}},
 				VictorOpsConfigs: []monitoringv1alpha1.VictorOpsConfig{{
@@ -1100,9 +1096,6 @@ receivers:
     to: test@example.com
     auth_password: 1234abc
     auth_secret: 1234abc
-    headers:
-      Comment: comment
-      Subject: subject
   pushover_configs:
   - user_key: 1234abc
     token: 1234abc
@@ -1191,112 +1184,5 @@ receivers:
 	})
 	if err != nil {
 		t.Fatalf("%v: %v", err, lastErr)
-	}
-}
-
-func testAMPreserveUserAddedMetadata(t *testing.T) {
-	t.Parallel()
-
-	ctx := framework.NewTestCtx(t)
-	defer ctx.Cleanup(t)
-	ns := ctx.CreateNamespace(t, framework.KubeClient)
-	ctx.SetupPrometheusRBAC(t, ns, framework.KubeClient)
-
-	name := "test"
-
-	alertManager := framework.MakeBasicAlertmanager(name, 3)
-
-	alertManager, err := framework.CreateAlertmanagerAndWaitUntilReady(ns, alertManager)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	updatedLabels := map[string]string{
-		"user-defined-label": "custom-label-value",
-	}
-	updatedAnnotations := map[string]string{
-		"user-defined-annotation": "custom-annotation-val",
-	}
-
-	svcClient := framework.KubeClient.CoreV1().Services(ns)
-	ssetClient := framework.KubeClient.AppsV1().StatefulSets(ns)
-	secretClient := framework.KubeClient.CoreV1().Secrets(ns)
-
-	resourceConfigs := []struct {
-		name   string
-		get    func() (metav1.Object, error)
-		update func(object metav1.Object) (metav1.Object, error)
-	}{
-		{
-			name: "alertmanager-operated service",
-			get: func() (metav1.Object, error) {
-				return svcClient.Get(context.TODO(), "alertmanager-operated", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return svcClient.Update(context.TODO(), asService(t, object), metav1.UpdateOptions{})
-			},
-		},
-		{
-			name: "alertmanager stateful set",
-			get: func() (metav1.Object, error) {
-				return ssetClient.Get(context.TODO(), "alertmanager-test", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return ssetClient.Update(context.TODO(), asStatefulSet(t, object), metav1.UpdateOptions{})
-			},
-		},
-		{
-			name: "alertmanager secret",
-			get: func() (metav1.Object, error) {
-				return secretClient.Get(context.TODO(), "alertmanager-test-generated", metav1.GetOptions{})
-			},
-			update: func(object metav1.Object) (metav1.Object, error) {
-				return secretClient.Update(context.TODO(), asSecret(t, object), metav1.UpdateOptions{})
-			},
-		},
-	}
-
-	for _, rConf := range resourceConfigs {
-		res, err := rConf.get()
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		updateObjectLabels(res, updatedLabels)
-		updateObjectAnnotations(res, updatedAnnotations)
-
-		_, err = rConf.update(res)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	// Ensure resource reconciles
-	alertManager.Spec.Replicas = proto.Int32(2)
-	_, err = framework.UpdateAlertmanagerAndWaitUntilReady(ns, alertManager)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Assert labels preserved
-	for _, rConf := range resourceConfigs {
-		res, err := rConf.get()
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		labels := res.GetLabels()
-		if !containsValues(labels, updatedLabels) {
-			t.Errorf("%s: labels do not contain updated labels, found: %q, should contain: %q", rConf.name, labels, updatedLabels)
-		}
-
-		annotations := res.GetAnnotations()
-		if !containsValues(annotations, updatedAnnotations) {
-			t.Fatalf("%s: annotations do not contain updated annotations, found: %q, should contain: %q", rConf.name, annotations, updatedAnnotations)
-		}
-	}
-
-	if err := framework.DeleteAlertmanagerAndWaitUntilGone(ns, name); err != nil {
-		t.Fatal(err)
 	}
 }

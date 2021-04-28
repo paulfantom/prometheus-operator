@@ -163,12 +163,6 @@ func New(ctx context.Context, conf operator.Config, logger log.Logger, r prometh
 		return nil, errors.Wrap(err, "error creating thanosruler informers")
 	}
 
-	var thanosStores []cache.Store
-	for _, informer := range o.thanosRulerInfs.GetInformers() {
-		thanosStores = append(thanosStores, informer.Informer().GetStore())
-	}
-	o.metrics.MustRegister(newThanosRulerCollectorForStores(thanosStores...))
-
 	o.ruleInfs, err = informers.NewInformersForResource(
 		informers.NewMonitoringInformerFactories(
 			o.config.Namespaces.AllowList,
@@ -655,7 +649,7 @@ func (o *Operator) sync(ctx context.Context, key string) error {
 		return nil
 	}
 
-	err = k8sutil.UpdateStatefulSet(ctx, ssetClient, sset)
+	_, err = ssetClient.Update(ctx, sset, metav1.UpdateOptions{})
 	sErr, ok := err.(*apierrors.StatusError)
 
 	if ok && sErr.ErrStatus.Code == 422 && sErr.ErrStatus.Reason == metav1.StatusReasonInvalid {
@@ -717,10 +711,10 @@ func ListOptions(name string) metav1.ListOptions {
 	}
 }
 
-// RulerStatus evaluates the current status of a ThanosRuler deployment with
-// respect to its specified resource object. It returns the status and a list of
+// ThanosRulerStatus evaluates the current status of a ThanosRuler deployment with
+// respect to its specified resource object. It return the status and a list of
 // pods that are not updated.
-func RulerStatus(ctx context.Context, kclient kubernetes.Interface, tr *monitoringv1.ThanosRuler) (*monitoringv1.ThanosRulerStatus, []v1.Pod, error) {
+func ThanosRulerStatus(ctx context.Context, kclient kubernetes.Interface, tr *monitoringv1.ThanosRuler) (*monitoringv1.ThanosRulerStatus, []v1.Pod, error) {
 	res := &monitoringv1.ThanosRulerStatus{Paused: tr.Spec.Paused}
 
 	pods, err := kclient.CoreV1().Pods(tr.Namespace).List(ctx, ListOptions(tr.Name))

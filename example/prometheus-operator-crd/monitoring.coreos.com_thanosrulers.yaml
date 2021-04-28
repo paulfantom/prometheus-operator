@@ -10,8 +10,6 @@ metadata:
 spec:
   group: monitoring.coreos.com
   names:
-    categories:
-    - prometheus-operator
     kind: ThanosRuler
     listKind: ThanosRulerList
     plural: thanosrulers

@@ -171,7 +171,7 @@ kubectl delete --ignore-not-found customresourcedefinitions \
 #### Running *end-to-end* tests on local kind cluster:
 
 1. `kind create cluster --image=kindest/node:<latest>`. e.g `v1.16.2` version.
-2. `kubectl cluster-info --context kind-kind`. kind version >= 0.6.x
+2. `export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"`
 3. `make image` - build Prometheus Operator  docker image locally.
 4. `for n in "operator" "config-reloader"; do kind load docker-image "quay.io/prometheus-operator/prometheus-$n:$(git rev-parse --short HEAD)"; done` - publish
 built locally images to be accessible inside kind.
@@ -203,11 +203,6 @@ do not report it by opening a GitHub issue, but instead please send an e-mail to
 the maintainers of the project found in the [MAINTAINERS.md](MAINTAINERS.md) file.
 
 [operator-vs-kube]: https://github.com/prometheus-operator/prometheus-operator/issues/2510#issuecomment-476692399
-
-## Troubleshooting
-
-Check the [troubleshooting documentation](Documentation/troubleshooting.md) for 
-common issues and frequently asked questions (FAQ).
 
 ## Acknowledgements
 

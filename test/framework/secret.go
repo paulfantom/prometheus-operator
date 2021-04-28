@@ -31,7 +31,7 @@ func MakeSecretWithCert(kubeClient kubernetes.Interface, ns, name string, keyLis
 		Data:       map[string][]byte{},
 	}
 
-	for i := range keyList {
+	for i, _ := range keyList {
 		secret.Data[keyList[i]] = dataList[i]
 	}
 
