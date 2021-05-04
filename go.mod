@@ -19,15 +19,16 @@ require (
 	github.com/oklog/run v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-community/prom-label-proxy v0.2.0
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.45.0
-	github.com/prometheus-operator/prometheus-operator/pkg/client v0.45.0
-	github.com/prometheus/alertmanager v0.21.1-0.20200911160112-1fdff6b3f939
-	github.com/prometheus/client_golang v1.9.0
-	github.com/prometheus/common v0.15.0
-	github.com/prometheus/prometheus v1.8.2-0.20210106134434-02e92236a8ba
-	github.com/stretchr/testify v1.6.1
-	github.com/thanos-io/thanos v0.17.2
-	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.47.1
+	github.com/prometheus-operator/prometheus-operator/pkg/client v0.47.1
+	github.com/prometheus/alertmanager v0.21.1-0.20201106142418-c39b78780054
+	github.com/prometheus/client_golang v1.10.0
+	github.com/prometheus/common v0.20.0
+	github.com/prometheus/prometheus v1.8.2-0.20210215121130-6f488061dfb4
+	github.com/stretchr/testify v1.7.0
+	github.com/thanos-io/thanos v0.19.0
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.20.1
