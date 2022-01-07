@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/alecthomas/units v0.0.0-20210927113745-59d0afb8317a
 	github.com/blang/semver/v4 v4.0.0
-	github.com/brancz/kube-rbac-proxy v0.8.0
+	github.com/brancz/kube-rbac-proxy v0.11.0
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/evanphx/json-patch/v5 v5.6.0
 	github.com/ghodss/yaml v1.0.0
