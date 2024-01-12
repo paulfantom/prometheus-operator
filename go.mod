@@ -10,7 +10,7 @@ require (
 	github.com/brancz/kube-rbac-proxy v0.15.0
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/docker/distribution v2.8.3+incompatible
-	github.com/evanphx/json-patch/v5 v5.7.0
+	github.com/evanphx/json-patch/v5 v5.8.0
 	github.com/go-kit/log v0.2.1
 	github.com/go-openapi/swag v0.22.7
 	github.com/go-test/deep v1.1.0
