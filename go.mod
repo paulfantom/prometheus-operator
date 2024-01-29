@@ -28,7 +28,7 @@ require (
 	github.com/prometheus/common v0.46.0
 	github.com/prometheus/prometheus v0.49.1
 	github.com/stretchr/testify v1.8.4
-	github.com/thanos-io/thanos v0.33.0
+	github.com/thanos-io/thanos v0.34.0
 	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb
 	golang.org/x/net v0.20.0
 	golang.org/x/sync v0.6.0
@@ -50,6 +50,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 )
 
