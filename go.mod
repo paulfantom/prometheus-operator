@@ -1,7 +1,7 @@
 module github.com/prometheus-operator/prometheus-operator
 
 go 1.21
-toolchain go1.22.2
+toolchain go1.22.3
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
@@ -26,7 +26,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.68.0
 	github.com/prometheus/alertmanager v0.27.0
 	github.com/prometheus/client_golang v1.19.1
-	github.com/prometheus/common v0.53.0
+	github.com/prometheus/common v0.54.0
 	github.com/prometheus/prometheus v0.52.1
 	github.com/stretchr/testify v1.9.0
 	github.com/thanos-io/thanos v0.35.1
