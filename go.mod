@@ -5,7 +5,7 @@ toolchain go1.22.5
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
-	github.com/alecthomas/units v0.0.0-20231202071711-9a357b53e9c9
+	github.com/alecthomas/units v0.0.0-20240626203959-61d1e3462e30
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/blang/semver/v4 v4.0.0
 	github.com/brancz/kube-rbac-proxy v0.18.0
@@ -27,11 +27,11 @@ require (
 	github.com/prometheus/alertmanager v0.27.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/common v0.55.0
-	github.com/prometheus/prometheus v0.52.2-0.20240614130246-4c1e71fa0b3d
+	github.com/prometheus/prometheus v0.54.1
 	github.com/stretchr/testify v1.9.0
 	github.com/thanos-io/thanos v0.36.1
 	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
-	golang.org/x/net v0.26.0
+	golang.org/x/net v0.27.0
 	golang.org/x/sync v0.7.0
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v2 v2.4.0
@@ -40,7 +40,7 @@ require (
 	k8s.io/apimachinery v0.30.1
 	k8s.io/client-go v0.30.1
 	k8s.io/component-base v0.30.1
-	k8s.io/klog/v2 v2.120.1
+	k8s.io/klog/v2 v2.130.1
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b
 	sigs.k8s.io/controller-runtime v0.18.5
 	sigs.k8s.io/yaml v1.4.0
@@ -56,7 +56,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.53.16 // indirect
+	github.com/aws/aws-sdk-go v1.54.19 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dennwc/varint v1.0.0 // indirect
@@ -66,7 +66,7 @@ require (
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
-	github.com/go-logr/logr v1.4.1 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-openapi/analysis v0.23.0 // indirect
 	github.com/go-openapi/errors v0.22.0 // indirect
@@ -108,13 +108,13 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.mongodb.org/mongo-driver v1.14.0 // indirect
-	go.opentelemetry.io/otel v1.27.0 // indirect
-	go.opentelemetry.io/otel/metric v1.27.0 // indirect
-	go.opentelemetry.io/otel/trace v1.27.0 // indirect
+	go.opentelemetry.io/otel v1.28.0 // indirect
+	go.opentelemetry.io/otel/metric v1.28.0 // indirect
+	go.opentelemetry.io/otel/trace v1.28.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
