@@ -25,8 +25,8 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.68.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.68.0
 	github.com/prometheus/alertmanager v0.27.0
-	github.com/prometheus/client_golang v1.19.1
-	github.com/prometheus/common v0.55.0
+	github.com/prometheus/client_golang v1.20.0
+	github.com/prometheus/common v0.57.0
 	github.com/prometheus/prometheus v0.54.1
 	github.com/stretchr/testify v1.9.0
 	github.com/thanos-io/thanos v0.36.1
@@ -52,6 +52,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
+	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/x448/float16 v0.8.4 // indirect
