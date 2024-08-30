@@ -1,14 +1,14 @@
 module github.com/prometheus-operator/prometheus-operator
 
 go 1.21
-toolchain go1.22.5
+toolchain go1.23.0
 
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/alecthomas/units v0.0.0-20240626203959-61d1e3462e30
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/blang/semver/v4 v4.0.0
-	github.com/brancz/kube-rbac-proxy v0.18.0
+	github.com/brancz/kube-rbac-proxy v0.18.1
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/distribution v2.8.3+incompatible
 	github.com/evanphx/json-patch/v5 v5.9.0
