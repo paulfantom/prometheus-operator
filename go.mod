@@ -1,8 +1,6 @@
 module github.com/prometheus-operator/prometheus-operator
 
 go 1.21
-toolchain go1.23.0
-
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/alecthomas/units v0.0.0-20240626203959-61d1e3462e30
@@ -29,8 +27,8 @@ require (
 	github.com/prometheus/common v0.60.1
 	github.com/prometheus/prometheus v0.300.0
 	github.com/stretchr/testify v1.10.0
-	github.com/thanos-io/thanos v0.36.1
-	golang.org/x/exp v0.0.0-20240119083558-1b970713d09a
+	github.com/thanos-io/thanos v0.37.1
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 	golang.org/x/net v0.31.0
 	golang.org/x/sync v0.9.0
 	google.golang.org/protobuf v1.35.2
@@ -52,7 +50,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.7.0 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
-	github.com/klauspost/compress v1.17.10 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
 	github.com/x448/float16 v0.8.4 // indirect
@@ -65,7 +63,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
-	github.com/efficientgo/core v1.0.0-rc.2 // indirect
+	github.com/efficientgo/core v1.0.0-rc.3 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
@@ -119,7 +117,7 @@ require (
 	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/term v0.26.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
-	golang.org/x/time v0.6.0 // indirect
+	golang.org/x/time v0.7.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.1
