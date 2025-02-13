@@ -8,7 +8,7 @@ require (
 	github.com/alecthomas/units v0.0.0-20240626203959-61d1e3462e30
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/blang/semver/v4 v4.0.0
-	github.com/brancz/kube-rbac-proxy v0.18.1
+	github.com/brancz/kube-rbac-proxy v0.18.2
 	github.com/cespare/xxhash/v2 v2.3.0
 	github.com/docker/distribution v2.8.3+incompatible
 	github.com/evanphx/json-patch/v5 v5.9.11
@@ -35,11 +35,11 @@ require (
 	golang.org/x/sync v0.11.0
 	google.golang.org/protobuf v1.36.1
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.31.1
+	k8s.io/api v0.31.3
 	k8s.io/apiextensions-apiserver v0.31.0
-	k8s.io/apimachinery v0.31.1
-	k8s.io/client-go v0.31.1
-	k8s.io/component-base v0.31.0
+	k8s.io/apimachinery v0.31.3
+	k8s.io/client-go v0.31.3
+	k8s.io/component-base v0.31.3
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/utils v0.0.0-20240711033017-18e509b52bc8
 	sigs.k8s.io/controller-runtime v0.19.2
