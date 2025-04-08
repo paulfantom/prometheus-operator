@@ -1,6 +1,8 @@
 module github.com/prometheus-operator/prometheus-operator
 
 go 1.21
+toolchain go1.24.1
+
 require (
 	github.com/alecthomas/kingpin/v2 v2.4.0
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b
@@ -29,8 +31,8 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/thanos-io/thanos v0.38.0
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
-	golang.org/x/net v0.38.0
-	golang.org/x/sync v0.12.0
+	golang.org/x/net v0.39.0
+	golang.org/x/sync v0.13.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.32.2
@@ -114,9 +116,9 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/oauth2 v0.25.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
-	golang.org/x/term v0.30.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/term v0.31.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
