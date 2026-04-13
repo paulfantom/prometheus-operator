@@ -26,7 +26,7 @@ require (
 	github.com/prometheus/alertmanager v0.32.0
 	github.com/prometheus/client_golang v1.23.2
 	github.com/prometheus/common v0.67.5
-	github.com/prometheus/prometheus v0.311.1
+	github.com/prometheus/prometheus v0.311.2
 	github.com/stretchr/testify v1.11.1
 	github.com/thanos-io/thanos v0.41.0
 	golang.org/x/exp v0.0.0-20260218203240-3dfff04db8fa
